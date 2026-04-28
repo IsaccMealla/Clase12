@@ -9,6 +9,7 @@ export default function GameBoard({ level, onBackToMenu, onSelectLevel }) {
   const [activePowerUp, setActivePowerUp] = useState(null);
   const [shieldActive, setShieldActive] = useState(false);
   const [speedBoost, setSpeedBoost] = useState(false);
+  const [isShrinked, setIsShrinked] = useState(false); // ✨ NUEVO ESTADO SHRINK
   const [isShaking, setIsShaking] = useState(false);
   const [selectedNextLevel, setSelectedNextLevel] = useState(null);
   const [collectedPowerUps, setCollectedPowerUps] = useState(new Set());
@@ -23,7 +24,7 @@ export default function GameBoard({ level, onBackToMenu, onSelectLevel }) {
   const [time, setTime] = useState(0);
   const timerRef = useRef(null);
 
-  // 🎮 MAPAS CON OBSTÁCULOS PATRULLEROS - DIFICULTAD PROGRESIVA
+  // 🎮 MAPAS CON OBSTÁCULOS PATRULLEROS Y NUEVOS POWER-UPS
   const levelMaps = {
     1: {
       name: 'El Camino',
@@ -62,6 +63,7 @@ export default function GameBoard({ level, onBackToMenu, onSelectLevel }) {
       powerUps: [
         { id: 'speed-1', top: '480px', left: '150px', type: 'speed' },
         { id: 'shield-2', top: '100px', left: '500px', type: 'shield' },
+        { id: 'shrink-1', top: '300px', left: '250px', type: 'shrink' }, // ✨ AÑADIDO A NIVEL 2
       ],
       start: { top: '50px', left: '50px' },
       goal: { top: '520px', left: '650px' },
@@ -88,6 +90,7 @@ export default function GameBoard({ level, onBackToMenu, onSelectLevel }) {
       powerUps: [
         { id: 'shield-3', top: '450px', left: '100px', type: 'shield' },
         { id: 'speed-2', top: '100px', left: '550px', type: 'speed' },
+        { id: 'shrink-2', top: '250px', left: '350px', type: 'shrink' }, // ✨ AÑADIDO A NIVEL 3
       ],
       start: { top: '50px', left: '50px' },
       goal: { top: '50px', left: '650px' },
@@ -207,13 +210,9 @@ export default function GameBoard({ level, onBackToMenu, onSelectLevel }) {
     const currentMap = levelMaps[level];
     const timeLimit = currentMap.timeLimit;
     
-    // 3 estrellas: menos del 50% del tiempo
     if (time <= timeLimit * 0.5) return 3;
-    // 2 estrellas: menos del 75% del tiempo
     if (time <= timeLimit * 0.75) return 2;
-    // 1 estrella: menos del tiempo límite
     if (time <= timeLimit) return 1;
-    // Sin estrellas: pasó el tiempo límite
     return 0;
   }, [level, time]);
 
@@ -226,6 +225,9 @@ export default function GameBoard({ level, onBackToMenu, onSelectLevel }) {
     } else if (type === 'speed') {
       setSpeedBoost(true);
       setTimeout(() => setSpeedBoost(false), 4000);
+    } else if (type === 'shrink') { // ✨ NUEVA LÓGICA SHRINK
+      setIsShrinked(true);
+      setTimeout(() => setIsShrinked(false), 5000); // Dura 5 segundos
     }
   }, [playSound]);
 
@@ -236,6 +238,7 @@ export default function GameBoard({ level, onBackToMenu, onSelectLevel }) {
     setActivePowerUp(null);
     setShieldActive(false);
     setSpeedBoost(false);
+    setIsShrinked(false); // ✨ REINICIAR SHRINK
     setCollectedPowerUps(new Set());
     clearInterval(timerRef.current);
     activeCollisions.current.clear();
@@ -451,7 +454,7 @@ export default function GameBoard({ level, onBackToMenu, onSelectLevel }) {
 
   // 🎮 JUEGO PRINCIPAL
   return (
-    <div ref={gameboardRef} className="game-board game-board-3d">
+    <div ref={gameboardRef} className={`game-board game-board-3d ${isShaking ? 'screen-shake' : ''}`}>
       {/* SCOREBOARD MEJORADO */}
       <div className="scoreboard">
         <div className="score-item">
@@ -469,10 +472,11 @@ export default function GameBoard({ level, onBackToMenu, onSelectLevel }) {
       </div>
 
       {/* POWER-UP STATUS */}
-      {(shieldActive || speedBoost) && (
+      {(shieldActive || speedBoost || isShrinked) && (
         <div className="power-up-status">
           {shieldActive && <div className="power-badge shield">🛡️ Escudo Activo</div>}
           {speedBoost && <div className="power-badge speed">⚡ Velocidad Boost</div>}
+          {isShrinked && <div className="power-badge shrink">🍄 Tamaño Mini</div>}
         </div>
       )}
 
@@ -508,7 +512,7 @@ export default function GameBoard({ level, onBackToMenu, onSelectLevel }) {
       {/* VIP */}
       <div
         ref={vipRef}
-        className={`vip-box ${shieldActive ? 'vip-shield' : ''} ${speedBoost ? 'vip-speed' : ''}`}
+        className={`vip-box ${shieldActive ? 'vip-shield' : ''} ${speedBoost ? 'vip-speed' : ''} ${isShrinked ? 'shrink-mode' : ''}`}
         style={{ top: currentMap.start.top, left: currentMap.start.left }}
       >
         {shieldActive && <div className="shield-effect" />}
@@ -563,24 +567,34 @@ export default function GameBoard({ level, onBackToMenu, onSelectLevel }) {
       ))}
 
       {/* POWER-UPS */}
-      {currentMap.powerUps.map((pu) => (
-        !collectedPowerUps.has(pu.id) && (
-          <div
-            key={pu.id}
-            data-id={pu.id}
-            data-type={pu.type}
-            className="power-up"
-            style={{
-              top: pu.top,
-              left: pu.left,
-            }}
-          >
-            <span className="power-up-icon">
-              {pu.type === 'shield' ? '🛡️' : '⚡'}
-            </span>
-          </div>
-        )
-      ))}
+      {currentMap.powerUps.map((pu) => {
+        // ✨ NUEVA LÓGICA DE ÍCONOS
+        const getPowerUpIcon = (type) => {
+          if (type === 'shield') return '🛡️';
+          if (type === 'speed') return '⚡';
+          if (type === 'shrink') return '🍄';
+          return '✨';
+        };
+
+        return (
+          !collectedPowerUps.has(pu.id) && (
+            <div
+              key={pu.id}
+              data-id={pu.id}
+              data-type={pu.type}
+              className={`power-up pu-${pu.type}`}
+              style={{
+                top: pu.top,
+                left: pu.left,
+              }}
+            >
+              <span className="power-up-icon">
+                {getPowerUpIcon(pu.type)}
+              </span>
+            </div>
+          )
+        );
+      })}
 
       {/* PARTÍCULAS */}
       {particles.map((p) => (
