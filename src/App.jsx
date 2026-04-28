@@ -1,25 +1,19 @@
 import { useState } from 'react';
+import Menu from './components/Menu';
+import GameBoard from './components/GameBoard';
 import './App.css';
 
 function App() {
-  // Estado para guardar los puntos (cada colisión suma un punto)
-  const [score, setScore] = useState(0);
+  // Ahora guardamos qué nivel se seleccionó (null = estamos en el menú)
+  const [currentLevel, setCurrentLevel] = useState(null);
 
   return (
-    <div className="game-container">
-      {/* Marcador */}
-      <div className="scoreboard">
-        <h2>Puntuación: {score}</h2>
-      </div>
-
-      {/* La caja VIP que se deberá arrastrar */}
-      <div className="vip-box" id="vip">
-        VIP
-      </div>
-
-      {/* Obstáculos de prueba para que tus compañeros detecten colisiones */}
-      <div className="obstacle" style={{ top: '150px', left: '200px' }}></div>
-      <div className="obstacle" style={{ top: '400px', left: '500px' }}></div>
+    <div className="app-container">
+      {currentLevel ? (
+        <GameBoard level={currentLevel} onBackToMenu={() => setCurrentLevel(null)} />
+      ) : (
+        <Menu onSelectLevel={setCurrentLevel} />
+      )}
     </div>
   );
 }
