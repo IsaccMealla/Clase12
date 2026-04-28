@@ -97,7 +97,6 @@ export default function GameBoard({ level, onBackToMenu }) {
           </p>
 
           <div className="victory-buttons">
-            {/* Si hay siguiente nivel, ofrecer continuar */}
             {level < 3 && (
               <button
                 className="victory-btn primary"
@@ -105,12 +104,11 @@ export default function GameBoard({ level, onBackToMenu }) {
                   setLevelComplete(false);
                   setScore(0);
                   activeCollisions.current.clear();
-                  // Reinicia la posición del VIP
                   if (vipRef.current) {
                     vipRef.current.style.transform = 'translate(0px, 0px)';
                   }
-                  // Le decimos al padre que suba al siguiente nivel
-                  onBackToMenu(); // 👈 La Persona 3 puede cambiar esto por onNextLevel(level + 1)
+                  
+                  onBackToMenu(); 
                 }}
               >
                 Siguiente Nivel →
