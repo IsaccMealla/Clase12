@@ -66,9 +66,9 @@ body {
 }
 
 .menu-title {
-  font-size: 3.5rem;
-  font-weight: 900;
-  margin-bottom: 15px;
+  font-size: 2rem;
+  font-weight: 1000;
+  margin-bottom: 40px;
   background: linear-gradient(to bottom, #fff 30%, #94a3b8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
