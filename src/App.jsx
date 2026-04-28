@@ -10,7 +10,11 @@ function App() {
   return (
     <div className="app-container">
       {currentLevel ? (
-        <GameBoard level={currentLevel} onBackToMenu={() => setCurrentLevel(null)} />
+        <GameBoard 
+          level={currentLevel} 
+          onBackToMenu={() => setCurrentLevel(null)}
+          onSelectLevel={setCurrentLevel}
+        />
       ) : (
         <Menu onSelectLevel={setCurrentLevel} />
       )}

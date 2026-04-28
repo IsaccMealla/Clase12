@@ -22,15 +22,18 @@ body {
 }
 
 /* =========================================
-   2. CONTENEDOR PRINCIPAL CON FONDO ANIMADO
+   2. CONTENEDOR PRINCIPAL - PERFECTAMENTE CENTRADO
    ========================================= */
 .app-container {
   width: 100vw;
   height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
   
   /* Fondo con gradiente dinámico */
   background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #1e1b4b);
@@ -53,11 +56,18 @@ body {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   border-radius: 24px;
-  padding: 60px 40px;
+  padding: 60px 50px;
   text-align: center;
-  max-width: 600px;
+  max-width: 650px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 90%;
+}
+
+.menu-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 @keyframes fadeInUp {
@@ -113,13 +123,19 @@ body {
 }
 
 /* =========================================
-   4. INTERFAZ DEL JUEGO (GAMEBOARD)
+   4. INTERFAZ DEL JUEGO (GAMEBOARD) - CENTRADO
    ========================================= */
 .game-board {
   width: 100%;
   height: 100%;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 900px;
+  max-height: 700px;
+  margin: 0 auto;
 }
 
 /* Marcador flotante */
@@ -346,7 +362,7 @@ body {
 }
 
 /* =========================================
-   9. PANTALLA DE VICTORIA
+   9. PANTALLA DE VICTORIA MEJORADA CON SELECTOR DE NIVELES
    ========================================= */
 
 .victory-screen {
@@ -358,6 +374,17 @@ body {
   background: linear-gradient(-45deg, #0f172a, #1e293b, #14532d, #1e293b);
   background-size: 400% 400%;
   animation: gradientFlow 8s ease infinite;
+  overflow-y: auto;
+  padding: 30px 20px;
+}
+
+.victory-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  width: 100%;
+  max-width: 1400px;
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .victory-card {
@@ -365,91 +392,762 @@ body {
   backdrop-filter: blur(24px);
   border: 1px solid rgba(34, 197, 94, 0.3);
   border-radius: 28px;
-  padding: 60px 50px;
+  padding: 50px 40px;
   text-align: center;
-  max-width: 480px;
   box-shadow:
     0 0 60px rgba(34, 197, 94, 0.15),
     0 25px 50px rgba(0, 0, 0, 0.5);
-  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .victory-icon {
-  font-size: 5rem;
-  margin-bottom: 16px;
+  font-size: 4rem;
   animation: bounceIn 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97);
 }
 
-@keyframes bounceIn {
-  0%   { transform: scale(0) rotate(-15deg); }
-  60%  { transform: scale(1.2) rotate(5deg); }
-  100% { transform: scale(1) rotate(0deg); }
-}
-
 .victory-title {
-  font-size: 2.6rem;
+  font-size: 2.4rem;
   font-weight: 900;
   color: #22c55e;
   text-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
-  margin-bottom: 8px;
 }
 
 .victory-level {
-  font-size: 1rem;
+  font-size: 1.3rem;
   color: #94a3b8;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
 
-.victory-score {
-  font-size: 1.15rem;
-  color: #cbd5e1;
-  margin-bottom: 36px;
-}
-
-.victory-score span {
-  color: #fbbf24;
-  font-weight: 700;
-  font-size: 1.4rem;
-}
-
-.victory-buttons {
+/* ESTRELLAS */
+.stars-display {
   display: flex;
-  gap: 14px;
   justify-content: center;
-  flex-wrap: wrap;
+  gap: 12px;
+  margin: 15px 0;
+  font-size: 2.5rem;
 }
 
-.victory-btn {
-  padding: 14px 28px;
-  font-size: 1rem;
+.star {
+  color: #64748b;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 5px rgba(100, 116, 139, 0.3);
+}
+
+.star.earned {
+  color: #fbbf24;
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.8);
+  animation: starPop 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes starPop {
+  0% { transform: scale(0) rotate(-20deg); }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.victory-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stat-item:last-child {
+  border-bottom: none;
+}
+
+.stat-item.best {
+  background: rgba(34, 197, 94, 0.1);
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(34, 197, 94, 0.3) !important;
+}
+
+.stat-label {
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.stat-value {
+  color: #fbbf24;
+  font-weight: 900;
+  font-size: 1.2rem;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+.stat-item.best .stat-value {
+  color: #22c55e;
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+}
+
+.quick-action-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.action-btn {
+  padding: 12px 28px;
+  font-size: 0.95rem;
   font-weight: 700;
-  border-radius: 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.25s ease;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%);
+  color: #fca5a5;
+  border: 2px solid rgba(239, 68, 68, 0.4);
+}
+
+.action-btn:hover {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.4) 0%, rgba(220, 38, 38, 0.2) 100%);
+  color: #fecaca;
+  border-color: #ef4444;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+}
+
+/* SELECTOR DE NIVELES */
+.levels-grid {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 28px;
+  padding: 40px;
+  box-shadow:
+    0 0 60px rgba(34, 197, 94, 0.15),
+    0 25px 50px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.levels-title {
+  font-size: 1.6rem;
+  color: #22c55e;
+  text-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.levels-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.level-select-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(34, 197, 94, 0.1) 100%);
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.level-select-card:hover:not(.locked) {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(34, 197, 94, 0.2) 100%);
+  border-color: rgba(34, 197, 94, 0.6);
+  transform: translateX(10px);
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.4);
+}
+
+.level-select-card.current {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+  border-color: rgba(34, 197, 94, 0.8);
+  box-shadow: 0 0 40px rgba(34, 197, 94, 0.4);
+}
+
+.level-select-card.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}
+
+.level-select-card.locked:hover {
+  transform: none;
+}
+
+.level-number {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.level-name {
+  font-size: 1.3rem;
+  color: white;
+  font-weight: 900;
+}
+
+.level-difficulty {
+  font-size: 0.9rem;
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+.level-stars {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 1.3rem;
+}
+
+.star-mini {
+  color: #64748b;
+  text-shadow: 0 0 5px rgba(100, 116, 139, 0.3);
+}
+
+.star-mini.earned {
+  color: #fbbf24;
+  text-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+}
+
+.level-lock {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.5rem;
+  filter: drop-shadow(0 0 10px rgba(100, 116, 139, 0.5));
+}
+
+.level-confirm {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.confirm-btn, .cancel-btn {
+  padding: 12px 28px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 12px;
   cursor: pointer;
   border: none;
   transition: all 0.25s ease;
 }
 
-.victory-btn.primary {
+.confirm-btn {
   background: #22c55e;
   color: #052e16;
   box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
 }
 
-.victory-btn.primary:hover {
+.confirm-btn:hover {
   background: #16a34a;
   transform: translateY(-2px);
   box-shadow: 0 0 30px rgba(34, 197, 94, 0.6);
 }
 
-.victory-btn.secondary {
+.cancel-btn {
   background: rgba(255, 255, 255, 0.08);
   color: #94a3b8;
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.victory-btn.secondary:hover {
+.cancel-btn:hover {
   background: rgba(255, 255, 255, 0.15);
   color: white;
+}
+
+/* RESPONSIVE PARA PANTALLA DE VICTORIA */
+@media (max-width: 1200px) {
+  .victory-container {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 768px) {
+  .victory-screen {
+    padding: 20px 10px;
+  }
+
+  .victory-container {
+    gap: 20px;
+  }
+
+  .victory-card,
+  .levels-grid {
+    padding: 30px 20px;
+    border-radius: 20px;
+  }
+
+  .victory-title {
+    font-size: 1.8rem;
+  }
+
+  .levels-title {
+    font-size: 1.2rem;
+  }
+
+  .level-select-card {
+    padding: 15px;
+  }
+}
+
+/* =========================================
+   10. EFECTOS 3D ISOMÉTRICO Y GAME FEEL
+   ========================================= */
+
+/* EFECTO 3D ISOMÉTRICO EN EL TABLERO */
+.game-board-3d {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.game-board-3d {
+  transform: rotateX(35deg) rotateZ(-25deg) scale(0.95);
+  transform-origin: center center;
+  transition: transform 0.3s ease-out;
+}
+
+/* SCREEN SHAKE - Temblor de pantalla al chocar */
+.game-board.screen-shake {
+  animation: screenShake 0.3s ease-out;
+}
+
+@keyframes screenShake {
+  0%, 100% { transform: rotateX(35deg) rotateZ(-25deg) scale(0.95) translate(0, 0); }
+  20%      { transform: rotateX(35deg) rotateZ(-25deg) scale(0.95) translate(-8px, -6px); }
+  40%      { transform: rotateX(35deg) rotateZ(-25deg) scale(0.95) translate(6px, 8px); }
+  60%      { transform: rotateX(35deg) rotateZ(-25deg) scale(0.95) translate(-5px, 4px); }
+  80%      { transform: rotateX(35deg) rotateZ(-25deg) scale(0.95) translate(4px, -5px); }
+}
+
+/* =========================================
+   11. OBSTÁCULOS PATRULLEROS (CON ANIMACIÓN)
+   ========================================= */
+
+.patroller {
+  position: absolute;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(220, 38, 38, 0.35) 100%);
+  border: 3px solid #ef4444;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
+  animation: patrol 
+    var(--patrol-speed, 4s) 
+    ease-in-out infinite;
+  filter: drop-shadow(2px 2px 8px rgba(239, 68, 68, 0.6));
+  /* Efecto 3D: sombra múltiple */
+  box-shadow: 
+    1px 1px 0 rgba(200, 0, 0, 0.8),
+    2px 2px 0 rgba(180, 0, 0, 0.7),
+    3px 3px 0 rgba(160, 0, 0, 0.6),
+    4px 4px 0 rgba(140, 0, 0, 0.5),
+    5px 5px 15px rgba(239, 68, 68, 0.4);
+}
+
+@keyframes patrol {
+  0%, 100% { 
+    transform: translateX(0);
+    filter: drop-shadow(2px 2px 8px rgba(239, 68, 68, 0.6));
+  }
+  50% { 
+    transform: translateX(var(--patrol-distance, 300px));
+    filter: drop-shadow(-2px 2px 12px rgba(239, 68, 68, 0.8));
+  }
+}
+
+.patroller-icon {
+  font-size: 1.8rem;
+  animation: spin 2s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* =========================================
+   12. POWER-UPS (PODERES ESPECIALES)
+   ========================================= */
+
+.power-up {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  animation: powerUpFloat 3s ease-in-out infinite;
+  cursor: pointer;
+  z-index: 25;
+  /* Efecto 3D */
+  box-shadow:
+    1px 1px 0 rgba(100, 200, 0, 0.8),
+    2px 2px 0 rgba(80, 180, 0, 0.7),
+    3px 3px 0 rgba(60, 160, 0, 0.6),
+    0 0 30px rgba(100, 200, 0, 0.4);
+}
+
+/* ESCUDO */
+.power-up[data-type="shield"] {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(16, 185, 129, 0.3) 100%);
+  border: 3px solid #10b981;
+  box-shadow:
+    1px 1px 0 rgba(34, 197, 94, 0.8),
+    2px 2px 0 rgba(16, 185, 129, 0.7),
+    3px 3px 0 rgba(5, 150, 105, 0.6),
+    0 0 35px rgba(34, 197, 94, 0.5);
+}
+
+/* VELOCIDAD */
+.power-up[data-type="speed"] {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(234, 88, 12, 0.3) 100%);
+  border: 3px solid #f97316;
+  box-shadow:
+    1px 1px 0 rgba(249, 115, 22, 0.8),
+    2px 2px 0 rgba(234, 88, 12, 0.7),
+    3px 3px 0 rgba(194, 65, 12, 0.6),
+    0 0 35px rgba(249, 115, 22, 0.5);
+}
+
+.power-up-icon {
+  font-size: 1.8rem;
+  animation: powerUpPulse 0.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(100, 200, 0, 0.6));
+}
+
+@keyframes powerUpFloat {
+  0%, 100% { 
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% { 
+    transform: translateY(-15px) scale(1.1);
+  }
+}
+
+@keyframes powerUpPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* =========================================
+   13. EFECTOS DEL ESCUDO EN EL VIP
+   ========================================= */
+
+.vip-shield {
+  filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.8)) 
+          drop-shadow(0 0 40px rgba(16, 185, 129, 0.5));
+  animation: shieldGlow 0.6s ease-in-out infinite;
+}
+
+.shield-effect {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border: 3px solid rgba(34, 197, 94, 0.6);
+  border-radius: 50%;
+  animation: shieldPulse 1.5s ease-out infinite;
+  pointer-events: none;
+  top: -20px;
+  left: -20px;
+}
+
+@keyframes shieldGlow {
+  0%, 100% { filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.8)) 
+                    drop-shadow(0 0 40px rgba(16, 185, 129, 0.5)); }
+  50% { filter: drop-shadow(0 0 30px rgba(34, 197, 94, 1)) 
+              drop-shadow(0 0 50px rgba(16, 185, 129, 0.7)); }
+}
+
+@keyframes shieldPulse {
+  0%   { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+/* BOOST DE VELOCIDAD */
+.vip-speed {
+  animation: speedBoost 0.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 15px rgba(249, 115, 22, 0.7));
+}
+
+@keyframes speedBoost {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(1.15); }
+}
+
+/* =========================================
+   14. PARTÍCULAS DE COLISIÓN
+   ========================================= */
+
+.particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, #fbbf24 0%, #f59e0b 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
+  pointer-events: none;
+  z-index: 30;
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.6));
+}
+
+/* =========================================
+   15. SCOREBOARD MEJORADO
+   ========================================= */
+
+.scoreboard {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.75) 100%);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  padding: 20px 30px;
+  border-radius: 16px;
+  border: 2px solid rgba(251, 191, 36, 0.3);
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 0 20px rgba(251, 191, 36, 0.1);
+}
+
+.score-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 8px 0;
+  font-size: 0.95rem;
+}
+
+.score-label {
+  color: #cbd5e1;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.score-value {
+  color: #fbbf24;
+  font-weight: 900;
+  font-size: 1.2rem;
+  text-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+  min-width: 40px;
+  text-align: right;
+}
+
+/* =========================================
+   16. ESTADO DE POWER-UPS (BADGES)
+   ========================================= */
+
+.power-up-status {
+  position: absolute;
+  top: 120px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 100;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.power-badge {
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  animation: badgePulse 0.6s ease-in-out infinite;
+}
+
+.power-badge.shield {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(16, 185, 129, 0.2) 100%);
+  border: 2px solid rgba(34, 197, 94, 0.6);
+  color: #86efac;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+}
+
+.power-badge.speed {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.3) 0%, rgba(234, 88, 12, 0.2) 100%);
+  border: 2px solid rgba(249, 115, 22, 0.6);
+  color: #fdba74;
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
+}
+
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+/* =========================================
+   17. BOTÓN VOLVER MEJORADO
+   ========================================= */
+
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%);
+  color: #fca5a5;
+  border: 2px solid rgba(239, 68, 68, 0.4);
+  border-radius: 12px;
+  cursor: pointer;
+  z-index: 100;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-size: 0.95rem;
+}
+
+.back-btn:hover {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.4) 0%, rgba(220, 38, 38, 0.2) 100%);
+  color: #fecaca;
+  border-color: #ef4444;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+}
+
+.back-btn:active {
+  transform: translateY(0);
+}
+
+/* =========================================
+   18. ESTADÍSTICAS DE VICTORIA MEJORADAS
+   ========================================= */
+
+.victory-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 24px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stat-item:last-child {
+  border-bottom: none;
+}
+
+.stat-item.best {
+  background: rgba(34, 197, 94, 0.1);
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-bottom: none;
+}
+
+.stat-label {
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.stat-value {
+  color: #fbbf24;
+  font-weight: 900;
+  font-size: 1.3rem;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+.stat-item.best .stat-value {
+  color: #22c55e;
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+}
+
+/* =========================================
+   19. RESPONSIVE - AJUSTES MÓVILES
+   ========================================= */
+
+@media (max-width: 1024px) {
+  .game-board-3d {
+    transform: rotateX(25deg) rotateZ(-20deg) scale(0.85);
+  }
+
+  .scoreboard {
+    padding: 15px 20px;
+    font-size: 0.9rem;
+  }
+
+  .score-item {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-board-3d {
+    transform: rotateX(15deg) rotateZ(-15deg) scale(0.75);
+  }
+
+  .scoreboard {
+    top: 10px;
+    right: 10px;
+    padding: 12px 16px;
+  }
+
+  .back-btn {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+  }
+
+  .power-up-status {
+    top: 100px;
+    right: 10px;
+  }
+
+  .victory-card {
+    padding: 40px 30px;
+    max-width: 90vw;
+  }
 }
